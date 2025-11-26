@@ -55,7 +55,7 @@ class DeckOfCards:
             raise Exception(f"There are {DeckOfCards.current_players} players to draw cards.")
         
         if dealer == True:
-            key = f"Dealer"
+            key = f"The Dealer"
         else:
             key = f"Player {player_num}"
 
@@ -111,155 +111,113 @@ class DeckOfCards:
 class Blackjack(DeckOfCards):
     def __init__(self, deck):
         super().__init__(deck)
-        self.players["Dealer"] = []
-    
+        self.players["The Dealer"] = []
+        self.player_hand_value = 0
+        self.dealer_hand_value = 0
+
     def play(self):
         print("♠ ♥ Blackjack ♦ ♣")
         command = None
 
         while command != "quit":
-            command = input("Type hit, stand, or quit.\n").lower().strip()
-       
+            # Player actions
+            if command != "stand":
+                command = input("Type hit, stand, or quit.\n").lower().strip()
+                print()
             while command != "hit" and command != "stand" and command != "quit":
                 command = input("Type hit, stand, or quit.\n")
+                print()
             if command == "hit":
                 self.hit(1)
-                
-            print(self.hit(dealer=True))
-            print(self.evaluate_hand(1))
-            print(self.evaluate_hand(dealer=True))
 
-    # player_num can be an int or list
-    def evaluate_hand(self, player_num: int | list = 0, dealer=False) -> str:
-        if dealer == True:
-            hand_value = 0
-            for card in self.players["Dealer"]:
-                if "2" in card:
-                    hand_value += 2
-                elif "3" in card:
-                    hand_value += 3
-                elif "4" in card:
-                    hand_value += 4
-                elif "5" in card:
-                    hand_value += 5
-                elif "6" in card:
-                    hand_value += 6
-                elif "7" in card:
-                    hand_value += 7
-                elif "8" in card:
-                    hand_value += 8
-                elif "9" in card:
-                    hand_value += 9
-                elif "10" in card:
-                    hand_value += 10
-                elif "J" in card:
-                    hand_value += 10
-                elif "Q" in card:
-                    hand_value += 10
-                elif "K" in card:
-                    hand_value += 10
-
-            for card in self.players["Dealer"]:
-                if "A" in card:
-                    if hand_value <= 10:
-                        hand_value += 11
-                    else:
-                        hand_value += 1
+            # Evaluates the player's hand and busts if greater than 21
+            self.evaluate_hand(1)
+            if self.player_hand_value > 21:
+                print(self.players)
+                print(f"Player has bust on {self.player_hand_value}!")
+                print("The Dealer wins!\n")
+                break
             
-            result = f"Dealer's hand is currently worth {hand_value}.\n"
-
-        elif type(player_num) == int:
-            hand_value = 0
-            for card in self.players[f"Player {player_num}"]:
-                if "2" in card:
-                    hand_value += 2
-                elif "3" in card:
-                    hand_value += 3
-                elif "4" in card:
-                    hand_value += 4
-                elif "5" in card:
-                    hand_value += 5
-                elif "6" in card:
-                    hand_value += 6
-                elif "7" in card:
-                    hand_value += 7
-                elif "8" in card:
-                    hand_value += 8
-                elif "9" in card:
-                    hand_value += 9
-                elif "10" in card:
-                    hand_value += 10
-                elif "J" in card:
-                    hand_value += 10
-                elif "Q" in card:
-                    hand_value += 10
-                elif "K" in card:
-                    hand_value += 10
+            # Dealer only hits when less than 17
+            if self.dealer_hand_value < 17:
+                self.hit(dealer=True)
+                self.evaluate_hand(dealer=True)
             
-            for card in self.players[f"Player {player_num}"]:
-                if "A" in card:
-                    if hand_value <= 10:
-                        hand_value += 11
+            # Dealer busts when greater than 21
+            if self.dealer_hand_value > 21:
+                print(self.players)
+                print(f"The Dealer has bust on {self.dealer_hand_value}!")
+                print("Player wins!\n")
+                break
+            
+            # Prints Blackjack information
+            print(self.players)
+            print(f"The Dealer's hand is worth {self.dealer_hand_value}.")
+            print(f"Player's hand is worth {self.player_hand_value}.")
+
+            # Dealer stands on 17 and above
+            if self.dealer_hand_value >= 17:
+                print("The Dealer is standing.")
+
+                # If the dealer and player are standing, 
+                # evaluate whether the hands are equal or one is closer to 21 and choose a winner
+                if command == "stand":
+                    print()
+                    print(self.players)
+                    if 21 - self.player_hand_value < 21 - self.dealer_hand_value:
+                        print("Player 1 is closer to 21.")
+                        print("Player 1 wins!") 
+                    elif 21- self.dealer_hand_value < 21 - self.player_hand_value:
+                        print("The Dealer is closer to 21.")
+                        print("The Dealer wins!")
                     else:
-                        hand_value += 1
-
-            result = f"Player {player_num}'s hand is currently worth {hand_value}."
-        
-        elif type(player_num) == list:
-            result = []
-            for player in player_num:
-                hand_value = 0
-                for card in self.players[f"Player {player}"]:
-                    if "2" in card:
-                        hand_value += 2
-                    elif "3" in card:
-                        hand_value += 3
-                    elif "4" in card:
-                        hand_value += 4
-                    elif "5" in card:
-                        hand_value += 5
-                    elif "6" in card:
-                        hand_value += 6
-                    elif "7" in card:
-                        hand_value += 7
-                    elif "8" in card:
-                        hand_value += 8
-                    elif "9" in card:
-                        hand_value += 9
-                    elif "10" in card:
-                        hand_value += 10
-                    elif "J" in card:
-                        hand_value += 10
-                    elif "Q" in card:
-                        hand_value += 10
-                    elif "K" in card:
-                        hand_value += 10
-
-                for card in self.players[f"Player {player}"]:
-                    if "A" in card:
-                        if hand_value <= 10:
-                            hand_value += 11
-                        else:
-                            hand_value += 1
-                
-                result.append(f"Player {player}'s hand is currently worth {hand_value}.")
-            result = "\n".join(result)
-
-        if hand_value > 21 and type(player_num) == int:
-            return f"Player {player_num} bust with a {card} on {hand_value}!\n"
-        elif hand_value > 21 and type(player_num) == list:
-            return f"Player {player} bust with a {card} on {hand_value}!\n"
-        else:
-            return result
+                        print("The Dealer and Player are an equal distance from 21.")
+                        print("It's a tie!")
+                    break
+            print()
     
+    # Evaluates the value of the dealer's or player's hand
+    def evaluate_hand(self, player_num: int | list = 0, dealer=False) -> int:
+        values = [2, 3, 4, 5, 6, 7, 8, 9, 10]
+        hand_value = 0
+
+        if dealer == True:
+            key = "The Dealer"
+        else:
+            key = f"Player {player_num}"
+        
+        for card in self.players[key]:
+            for value in values:
+                if str(value) in card:
+                    hand_value += value
+            if "J" in card:
+                hand_value += 10
+            elif "Q" in card:
+                hand_value += 10
+            elif "K" in card:
+                hand_value += 10
+
+        for card in self.players[key]:
+            if "A" in card:
+                if hand_value <= 10:
+                    hand_value += 11
+                else:
+                    hand_value += 1
+
+        # Assigns dealer and player hand values
+        if dealer == True:
+            self.dealer_hand_value = hand_value
+        else:
+            self.player_hand_value = hand_value
+
+    # Increases the value of the dealer's or player's hand
     def hit(self, player_num: int = 0, dealer: bool = False) -> dict:
         if dealer == True:
             super().draw(dealer=dealer)
         else:
             super().draw(player_num=player_num)
-        return self.players
 
-# Figure out how much an ace is worth 1 or 11
+
 cards = DeckOfCards(["SA", "S2", "S3", "S4", "S5", "S6", "S7", "S8", "S9", 
     "S10", "SJ", "SQ", "SK", "HA", "H2", "H3", "H4", "H5", "H6", 
     "H7", "H8", "H9", "H10", "HJ", "HQ", "HK", "DA", "D2", "D3", 
@@ -273,12 +231,58 @@ blackjack = Blackjack(["SA", "S2", "S3", "S4", "S5", "S6", "S7", "S8", "S9",
     "D4", "D5", "D6", "D7", "D8", "D9", "D10", "DJ", "DQ", "DK", 
     "CA", "C2", "C3", "C4", "C5", "C6", "C7", "C8", "C9", "C10", 
     "CJ", "CQ", "CK"])
-blackjack.add_players(1)
+
+
+# Add the possibility for more than one person to play Blackjack
+blackjack.add_players(2)
 blackjack.shuffle()
 # # print(blackjack.deck)
-print(blackjack.play())
+blackjack.play()
+
+
+# cards.add_players(4)
+# cards.draw(2, 5)
+# cards.deal(2)
+# print(cards.players)
+
+
+"""
+3. Gameplay
+At the start:
+You get two cards, the dealer gets two:
+One face-up
+One face-down (the “hole” card)
+Your options:
+Hit → Take another card
+Stand → Keep your total
+Double Down → Double your bet, get one more card, then stand
+Split → If your first two cards are the same value, you may split them into two hands
+Surrender (if allowed) → Forfeit half your bet and end the hand
+
+4. Blackjack
+A “blackjack” (also called a natural) is:
+Ace + 10-value card on your first two cards only
+This usually pays 3:2 (though some casinos use 6:5).
+A natural blackjack beats any other 21.
+
+7. Winning
+You win if:
+Your total is closer to 21 than the dealer's
+The dealer busts
+You have a natural blackjack and the dealer doesn't
+Push (tie):
+If you and the dealer have the same total (except blackjack vs 21), it's a push → your bet is returned.
+
+8. Insurance
+If the dealer's face-up card is an Ace, you may buy insurance (a side bet that pays 2:1 if the dealer has blackjack).
+It's almost always a bad bet strategically.
+
+9. Splitting Rules (common)
+You can split a pair to make two hands
+You must bet again for the second hand
+Aces often only receive one card each when split
+A split Ace + 10 is not a natural blackjack—it's just 21
+"""
 
 
 
-
-    
