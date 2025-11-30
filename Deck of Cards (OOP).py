@@ -259,25 +259,61 @@ card_template = """
 ___________
 |XX       |
 |X X X X  |
-|    X    | 
+|    2    | 
 |  X X X  | 
-|    X    |
+|    2    |
 |  X X X X|
 |       XX|
 ‾‾‾‾‾‾‾‾‾‾‾
 """
-x_num = 1
-for index, x in enumerate(card_template):
-    if x == "X":
-        print(f"x{x_num}= {index}")
-        x_num += 1
-    match index:
-        case 1:
-            card_template = card_template[0:14] + "A" + card_template[15:]
-            card_template = card_template[0:15] + "A" + card_template[16:]
+j = {"1": [14, 15],
+     "2": [15, 16],
+     "3": [26, 27],
+     "4": [28, 29],
+     "5": [30, 31],
+     "6": [32, 33],
+     "7": [42, 43],
+     "8": [53, 54],
+     "9": [55, 56],
+     "10": [57, 58],
+     "J": [68, 69],
+     "Q": [78, 79],
+     "K": [80, 81]}
 
-print(card_template)
-# 1 = 55
+symbol_pos = {1: [14],
+              2: [42, 68]}
+card_deck = []
+
+card_rank = 1
+# index = 0
+# for char in card_template:
+#     # if char == "X"
+for key in symbol_pos:
+    for index in symbol_pos[card_rank]:
+        if card_rank == 1:
+            print(card_template[0:index])
+        else:
+            print(card_template[0:index], end="")
+            for pos in symbol_pos[card_rank]:
+                print(card_template[index:])
+    card_rank += 1
+
+
+    # if char == "X":
+    #     print(card_template[0:symbol_pos[card_rank][index]] + "A")
+# Store all the indexes for the x's each card rank needs and do a for loop that for every item replaces that X with a symbol/rank from index:index + 1
+# x_num = 1
+# for index, x in enumerate(card_template):
+#     if x == "2":
+#         print(f"x{x_num}= {index} {index + 1}")
+#         x_num += 1
+#     match index:
+#         case 1:
+#             card_deck.append(card_template[0:14] + "A" + card_template[15:])
+#             # card_template = card_template[0:15] + "A" + card_template[16:]
+
+
+
 
 
 # Add the possibility for more than one person to play Blackjack
@@ -333,5 +369,4 @@ You must bet again for the second hand
 Aces often only receive one card each when split
 A split Ace + 10 is not a natural blackjack—it's just 21
 """
-
 
