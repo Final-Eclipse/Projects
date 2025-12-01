@@ -259,9 +259,9 @@ card_template = """
 ___________
 |XX       |
 |X X X X  |
-|    2    | 
+|    X    | 
 |  X X X  | 
-|    2    |
+|    X    |
 |  X X X X|
 |       XX|
 ‾‾‾‾‾‾‾‾‾‾‾
@@ -276,27 +276,54 @@ j = {"1": [14, 15],
      "8": [53, 54],
      "9": [55, 56],
      "10": [57, 58],
-     "J": [68, 69],
-     "Q": [78, 79],
-     "K": [80, 81]}
+     "11": [68, 69],
+     "12": [78, 79],
+     "13": [80, 81],
+     "14": 82,
+     "15": 84,
+     "16": 95,
+     "17": 96}
 
-symbol_pos = {1: [14],
-              2: [42, 68]}
+symbol_pos = {1: [55],
+              2: [30, 80],
+              3: [30, 55, 80],
+              4: [28, 32, 78, 82],
+              5: [28, 32, 55, 78, 82],
+              6: [28, 32, 53, 57, 78, 82],
+              7: [28, 32, 42, 53, 57, 78, 82],
+              8: [28, 32, 42, 53, 57, 68, 78, 82],
+              9: [28, 30, 32, 53, 55, 57, 78, 80, 82],
+              10: [28, 30, 32, 42, 53, 57, 68, 78, 80, 82]}
 card_deck = []
 
 card_rank = 1
-# index = 0
-# for char in card_template:
-#     # if char == "X"
-for key in symbol_pos:
-    for index in symbol_pos[card_rank]:
-        if card_rank == 1:
-            print(card_template[0:index])
-        else:
-            print(card_template[0:index], end="")
-            for pos in symbol_pos[card_rank]:
-                print(card_template[index:])
-    card_rank += 1
+card_suits = ["♠", "♥", "♦", "♣"]
+
+for suit in card_suits:
+    for key in symbol_pos:
+        card = ""
+        start = 0
+        for index in symbol_pos[key]:
+            end = index
+            card = card + card_template[start:end] + suit
+            start = end + 1
+        card = card + card_template[end + 1:]
+        card = card.replace("X", " ")
+        card_deck.append(card)
+# print("".join(card_deck))
+print(card_deck[0] + card_deck[1])
+
+
+
+# for key in symbol_pos:
+#     for index in symbol_pos[card_rank]:
+#         if card_rank == 1:
+#             print(card_template[0:index])
+#         else:
+#             print(card_template[0:index], end="")
+#             for pos in symbol_pos[card_rank]:
+#                 print(card_template[index:])
+#     card_rank += 1
 
 
     # if char == "X":
@@ -369,4 +396,3 @@ You must bet again for the second hand
 Aces often only receive one card each when split
 A split Ace + 10 is not a natural blackjack—it's just 21
 """
-
