@@ -17,7 +17,7 @@ class MainWindow(QMainWindow):
 
         self.setWindowTitle("Calculator")
         self.setMinimumSize(QSize(450, 750))
-        self.setWindowIcon(QIcon("calculator\calculator_icon.png"))
+        self.setWindowIcon(QIcon("calculator\calculator_icon.ico"))
         self.setStyleSheet("background-color: #1E1B2C")
 
         for key, button in self.key_widgets.items():
