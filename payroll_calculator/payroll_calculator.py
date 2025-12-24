@@ -2,6 +2,11 @@ from PyQt5.QtWidgets import QMainWindow, QApplication, QLabel, QWidget, QGridLay
 from PyQt5.QtGui import QIcon, QFont, QFontMetrics
 from PyQt5.QtCore import Qt
 
+# Allows taskbar to show icon
+import ctypes
+myappid = 'mycompany.myproduct.subproduct.version' # arbitrary string
+ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID(myappid)
+
 class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
